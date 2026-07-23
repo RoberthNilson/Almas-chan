@@ -1,167 +1,472 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Alma-chan 🌸</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <style>
     :root {
-      --bg: #1a1a2e; --bg2: #16213e; --bg3: #13132a; --bg4: #0f0f23;
-      --border: #0f3460; --accent: #e94560; --accent2: #ff6b9d;
-      --text: #eee; --text2: #aaa; --text3: #888;
+      --bg: #1a1a2e;
+      --bg2: #16213e;
+      --bg3: #13132a;
+      --bg4: #0f0f23;
+      --border: #0f3460;
+      --accent: #e94560;
+      --accent2: #ff6b9d;
+      --text: #eee;
+      --text2: #aaa;
+      --text3: #888;
     }
+
     .light {
-      --bg: #f0f2f5; --bg2: #fff; --bg3: #e8eaed; --bg4: #ddd;
-      --border: #ccc; --accent: #e94560; --accent2: #ff6b9d;
-      --text: #222; --text2: #555; --text3: #888;
+      --bg: #f0f2f5;
+      --bg2: #fff;
+      --bg3: #e8eaed;
+      --bg4: #ddd;
+      --border: #ccc;
+      --accent: #e94560;
+      --accent2: #ff6b9d;
+      --text: #222;
+      --text2: #555;
+      --text3: #888;
     }
+
     .combat {
-      --bg: #0a0000; --bg2: #1a0000; --bg3: #120000; --bg4: #080000;
-      --border: #ff0000; --accent: #ff0000; --accent2: #ff3333;
-      --text: #ffcccc; --text2: #ff6666; --text3: #cc0000;
+      --bg: #0a0000;
+      --bg2: #1a0000;
+      --bg3: #120000;
+      --bg4: #080000;
+      --border: #ff0000;
+      --accent: #ff0000;
+      --accent2: #ff3333;
+      --text: #ffcccc;
+      --text2: #ff6666;
+      --text3: #cc0000;
       animation: glitch-bg 0.5s infinite;
     }
+
     @keyframes glitch-bg {
-      0%, 100% { filter: none; }
-      25% { filter: hue-rotate(5deg); }
-      50% { filter: hue-rotate(-5deg) brightness(1.05); }
-      75% { filter: hue-rotate(10deg); }
+
+      0%,
+      100% {
+        filter: none;
+      }
+
+      25% {
+        filter: hue-rotate(5deg);
+      }
+
+      50% {
+        filter: hue-rotate(-5deg) brightness(1.05);
+      }
+
+      75% {
+        filter: hue-rotate(10deg);
+      }
     }
+
     .combat .msg.alma {
       border-color: #ff0000 !important;
-      text-shadow: 0 0 5px rgba(255,0,0,0.5);
+      text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
     }
-    .combat header { border-bottom-color: #ff0000 !important; }
-    .combat #shortcuts button:hover { border-color: #ff0000; }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    .combat header {
+      border-bottom-color: #ff0000 !important;
+    }
+
+    .combat #shortcuts button:hover {
+      border-color: #ff0000;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: var(--bg); color: var(--text);
-      display: flex; flex-direction: column;
-      height: 100vh; height: 100dvh;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
     }
+
     header {
-      background: var(--bg2); padding: 8px 12px;
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 2px solid var(--accent); flex-shrink: 0;
+      background: var(--bg2);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--accent);
+      flex-shrink: 0;
     }
-    .header-left h1 { font-size: 1.1rem; color: var(--accent2); }
-    .header-left span { font-size: 0.65rem; color: var(--text2); }
-    .header-right { display: flex; gap: 5px; align-items: center; }
+
+    .header-left h1 {
+      font-size: 1.1rem;
+      color: var(--accent2);
+    }
+
+    .header-left span {
+      font-size: 0.65rem;
+      color: var(--text2);
+    }
+
+    .header-right {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
     .hdr-btn {
-      width: 32px; height: 32px; border-radius: 50%;
-      border: 2px solid var(--border); background: var(--bg);
-      color: var(--text2); font-size: 0.85rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      color: var(--text2);
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: all 0.2s;
     }
-    .hdr-btn.active { border-color: var(--accent); color: var(--accent); }
-    .hdr-btn.mic-active { border-color: #00cc66; color: #00cc66; }
-    .hdr-btn.mic-listening { border-color: #ff3333; color: #ff3333; animation: pulse 0.4s infinite; }
+
+    .hdr-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .hdr-btn.mic-active {
+      border-color: #00cc66;
+      color: #00cc66;
+    }
+
+    .hdr-btn.mic-listening {
+      border-color: #ff3333;
+      color: #ff3333;
+      animation: pulse 0.4s infinite;
+    }
+
     @keyframes pulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(233,69,96,0.4); }
-      50% { box-shadow: 0 0 0 8px rgba(233,69,96,0); }
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(233, 69, 96, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 0 0 8px rgba(233, 69, 96, 0);
+      }
     }
+
     #status-bar {
-      display: flex; gap: 10px; padding: 4px 12px;
-      background: var(--bg4); font-size: 0.62rem; color: var(--text3);
-      flex-shrink: 0; overflow-x: auto; white-space: nowrap;
+      display: flex;
+      gap: 10px;
+      padding: 4px 12px;
+      background: var(--bg4);
+      font-size: 0.62rem;
+      color: var(--text3);
+      flex-shrink: 0;
+      overflow-x: auto;
+      white-space: nowrap;
     }
-    #status-bar span { display: inline-flex; align-items: center; gap: 3px; }
-    .dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
-    .dot-g { background: #00cc66; } .dot-y { background: #ffaa00; } .dot-r { background: #ff3333; }
+
+    #status-bar span {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-g {
+      background: #00cc66;
+    }
+
+    .dot-y {
+      background: #ffaa00;
+    }
+
+    .dot-r {
+      background: #ff3333;
+    }
+
     #shortcuts {
-      display: flex; gap: 4px; padding: 5px 8px; overflow-x: auto;
-      background: var(--bg3); flex-shrink: 0;
+      display: flex;
+      gap: 4px;
+      padding: 5px 8px;
+      overflow-x: auto;
+      background: var(--bg3);
+      flex-shrink: 0;
     }
+
     #shortcuts button {
-      flex-shrink: 0; padding: 4px 9px; border-radius: 10px;
-      border: 1px solid var(--border); background: var(--bg);
-      color: var(--text2); font-size: 0.68rem; cursor: pointer;
+      flex-shrink: 0;
+      padding: 4px 9px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text2);
+      font-size: 0.68rem;
+      cursor: pointer;
     }
-    #shortcuts button:hover { border-color: var(--accent); color: var(--text); }
+
+    #shortcuts button:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
     #chat {
-      flex: 1; overflow-y: auto; padding: 10px;
-      display: flex; flex-direction: column; gap: 6px;
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
+
     .msg {
-      max-width: 80%; padding: 9px 13px; border-radius: 14px;
-      line-height: 1.35; font-size: 0.85rem; animation: fadeIn 0.15s;
-      white-space: pre-wrap; word-break: break-word;
+      max-width: 80%;
+      padding: 9px 13px;
+      border-radius: 14px;
+      line-height: 1.35;
+      font-size: 0.85rem;
+      animation: fadeIn 0.15s;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
     .user {
-      align-self: flex-end; background: var(--accent); color: #fff;
+      align-self: flex-end;
+      background: var(--accent);
+      color: #fff;
       border-bottom-right-radius: 4px;
     }
+
     .alma {
-      align-self: flex-start; background: var(--bg2);
-      border: 1px solid var(--border); border-bottom-left-radius: 4px;
+      align-self: flex-start;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
     }
-    .alma.action { border-color: var(--accent2); }
+
+    .alma.action {
+      border-color: var(--accent2);
+    }
+
     .alma img {
-      max-width: 100%; border-radius: 8px; margin-top: 4px; cursor: pointer;
+      max-width: 100%;
+      border-radius: 8px;
+      margin-top: 4px;
+      cursor: pointer;
     }
+
     .action-tag {
-      display: inline-block; background: var(--accent); color: #fff;
-      font-size: 0.6rem; padding: 2px 7px; border-radius: 6px; margin-bottom: 3px;
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.6rem;
+      padding: 2px 7px;
+      border-radius: 6px;
+      margin-bottom: 3px;
     }
+
     .typing {
-      align-self: flex-start; color: var(--text3);
-      font-style: italic; font-size: 0.75rem;
+      align-self: flex-start;
+      color: var(--text3);
+      font-style: italic;
+      font-size: 0.75rem;
     }
+
     #input-bar {
-      display: flex; gap: 6px; padding: 8px;
-      background: var(--bg2); border-top: 1px solid var(--border); flex-shrink: 0;
+      display: flex;
+      gap: 6px;
+      padding: 8px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
     }
+
     #input-bar input {
-      flex: 1; padding: 9px 13px; border-radius: 18px;
-      border: 1px solid var(--border); background: var(--bg);
-      color: var(--text); font-size: 0.85rem; outline: none;
+      flex: 1;
+      padding: 9px 13px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.85rem;
+      outline: none;
     }
-    #input-bar input:focus { border-color: var(--accent); }
+
+    #input-bar input:focus {
+      border-color: var(--accent);
+    }
+
     #input-bar button {
-      padding: 9px 14px; border-radius: 18px; border: none;
-      background: var(--accent); color: #fff; font-size: 0.85rem;
-      cursor: pointer; white-space: nowrap;
+      padding: 9px 14px;
+      border-radius: 18px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
     }
-    #input-bar button:hover { opacity: 0.85; }
+
+    #input-bar button:hover {
+      opacity: 0.85;
+    }
+
     .preview-bar {
-      display: none; padding: 4px 10px; background: var(--bg3);
-      font-size: 0.7rem; color: var(--text2); align-items: center; gap: 6px;
+      display: none;
+      padding: 4px 10px;
+      background: var(--bg3);
+      font-size: 0.7rem;
+      color: var(--text2);
+      align-items: center;
+      gap: 6px;
     }
-    .preview-bar.show { display: flex; }
-    .preview-bar img { height: 30px; border-radius: 4px; }
-    .preview-bar button { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.8rem; }
+
+    .preview-bar.show {
+      display: flex;
+    }
+
+    .preview-bar img {
+      height: 30px;
+      border-radius: 4px;
+    }
+
+    .preview-bar button {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
     #menu-modal {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-      z-index: 100; align-items: center; justify-content: center;
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
     }
-    #menu-modal.show { display: flex; }
+
+    #menu-modal.show {
+      display: flex;
+    }
+
     .modal-content {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 16px; padding: 20px; width: 90%; max-width: 320px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      width: 90%;
+      max-width: 320px;
     }
-    .modal-content h3 { color: var(--accent2); margin-bottom: 12px; font-size: 1rem; }
+
+    .modal-content h3 {
+      color: var(--accent2);
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+
     .modal-content button {
-      display: block; width: 100%; padding: 10px; margin-bottom: 6px;
-      border-radius: 10px; border: 1px solid var(--border);
-      background: var(--bg); color: var(--text); font-size: 0.85rem;
-      cursor: pointer; text-align: left;
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 6px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-align: left;
     }
-    .modal-content button:hover { border-color: var(--accent); }
-    .modal-close { background: var(--accent) !important; color: #fff !important; text-align: center !important; margin-top: 10px !important; }
+
+    .modal-content button:hover {
+      border-color: var(--accent);
+    }
+
+    .modal-close {
+      background: var(--accent) !important;
+      color: #fff !important;
+      text-align: center !important;
+      margin-top: 10px !important;
+    }
+
     @media (min-width: 600px) {
-      #chat { padding: 16px 28%; }
-      .msg { max-width: 60%; }
+      #chat {
+        padding: 16px 28%;
+      }
+
+      .msg {
+        max-width: 60%;
+      }
     }
-    #waModal { position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:1000;display:flex;align-items:center;justify-content:center; }
-    #waModal .wa-box { background:var(--bg2);padding:20px;border-radius:12px;max-width:350px;width:90%;text-align:center;border:1px solid var(--border); }
-    #waModal .wa-box h2 { margin:0 0 12px 0;color:var(--accent2); }
-    #waQrImg img { max-width:260px;border-radius:8px;margin:10px 0; }
+
+    #waModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #waModal .wa-box {
+      background: var(--bg2);
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 350px;
+      width: 90%;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    #waModal .wa-box h2 {
+      margin: 0 0 12px 0;
+      color: var(--accent2);
+    }
+
+    #waQrImg img {
+      max-width: 260px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
   </style>
 </head>
+
 <body>
   <header>
     <div class="header-left">
@@ -215,7 +520,8 @@
 
   <div id="input-bar">
     <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFile(this)">
-    <button onclick="document.getElementById('fileInput').click()" style="background:var(--bg3);padding:9px 10px;">📎</button>
+    <button onclick="document.getElementById('fileInput').click()"
+      style="background:var(--bg3);padding:9px 10px;">📎</button>
     <input type="text" id="msg" placeholder="Fale com Alma-chan..." autocomplete="off">
     <button onclick="send()">Enviar</button>
   </div>
@@ -326,7 +632,7 @@
         document.getElementById("s-user").textContent = d.user;
         document.getElementById("cpuDot").className = "dot " + (d.cpu > 80 ? "dot-r" : d.cpu > 50 ? "dot-y" : "dot-g");
         document.getElementById("ramDot").className = "dot " + (d.ramUsed > 80 ? "dot-r" : d.ramUsed > 50 ? "dot-y" : "dot-g");
-      } catch {}
+      } catch { }
     }
     updateStatus();
     setInterval(updateStatus, 5000);
@@ -354,9 +660,9 @@
           const url = URL.createObjectURL(blob);
           ttsAudio = new Audio(url);
           ttsAudio.onended = () => { URL.revokeObjectURL(url); ttsAudio = null; };
-          ttsAudio.play().catch(() => {});
+          ttsAudio.play().catch(() => { });
         })
-        .catch(() => {});
+        .catch(() => { });
     }
     function toggleTts() {
       ttsEnabled = !ttsEnabled;
@@ -407,7 +713,7 @@
       chatEl.appendChild(div);
       chatEl.scrollTop = chatEl.scrollHeight;
       chatHistory.push({ role: who === "user" ? "user" : "assistant", text: text || "" });
-      
+
       if (who === "alma" && text) {
         const combatWords = ["alvo detectado", "laser", "plasma", "ameaça eliminada", "destruição", "atacar", "misseis", "canhão", "radar", "mod combate"];
         const isCombat = combatWords.some(w => text.toLowerCase().includes(w));
@@ -482,7 +788,8 @@
       if (desc) quick("gera uma imagem de " + desc);
     }
 
-    addMsg("ALM-01P online! 🌸 O que vamos fazer hoje, Pai? ✨", "alma");
+    addMsg("ALM-01P online! 🌸 Oi Pai! Tô tão feliz de ver você! O que vamos descobrir hoje? ✨", "alma");
   </script>
 </body>
+
 </html>
