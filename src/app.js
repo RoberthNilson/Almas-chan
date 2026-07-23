@@ -14,6 +14,12 @@ const tts = new EdgeTTS({
   rate: "+10%",
 });
 
+// Pre-set user name from env
+if (process.env.USER_NAME) {
+  const memory = require("./memory");
+  memory.setUserName("default", process.env.USER_NAME).catch(() => {});
+}
+
 const app = express();
 
 app.use(express.json({ limit: "10mb" }));
