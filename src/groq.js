@@ -51,7 +51,7 @@ async function chat(userId, userMessage, imageBase64) {
 
   // --- User recognition ---
   let userName = await memory.getUserName(userId);
-  if (!userName && (userId === "default" || userId === "web-user")) {
+  if (!userName) {
     userName = process.env.USER_NAME || null;
   }
   let systemPrompt = ALMA_SYSTEM_PROMPT;

@@ -553,7 +553,7 @@
     let selectedImageBase64 = null;
     const chatHistory = [];
 
-    // --- Unique user ID per browser ---
+    // --- Unique user ID per browser (persisted) ---
     let userId = localStorage.getItem("alma-user-id");
     if (!userId) {
       userId = "web-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
