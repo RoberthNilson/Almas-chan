@@ -95,6 +95,19 @@ async function chat(userId, userMessage, imageBase64) {
     return { text: "Desculpa, Pai... estou sem energia agora 😵 Tenta de novo em alguns minutos!", action: null, result: null };
   }
 
+  // Safety: if the reply is entirely a JSON action that leaked, force-handle it
+  const entireJsonMatch = reply.match(/^\s*\{[\s\S]*?"action"[\s\S]*?\}\s*$/);
+  if (entireJsonMatch) {
+    const forced = tryParseAction(reply);
+    if (forced) {
+      history.push({ role: "assistant", content: `[Ação: ${forced.action}]` });
+      return await executeActionAndRespond(forced, userId, history, systemPrompt);
+    }
+    // Unparseable JSON action — replace reply so user doesn't see raw JSON
+    reply = "Entendido! 🌸";
+    history[history.length - 1] = { role: "assistant", content: reply };
+  }
+
   const historyEntry = imageBase64
     ? { role: "assistant", content: `[Imagem analisada] ${reply}` }
     : { role: "assistant", content: reply };
@@ -102,44 +115,58 @@ async function chat(userId, userMessage, imageBase64) {
 
   const action = tryParseAction(reply);
   if (action) {
-    history[history.length - 1] = { role: "assistant", content: `[Executou ação: ${action.action}]` };
-    const result = await actions.execute(action.action, action.args || "", userId);
-
-    // For display-type actions (image, music), return directly for web UI
-    try {
-      const parsed = JSON.parse(result);
-      if (parsed.type === "image" || parsed.type === "music") {
-        return { text: null, action: action.action, result };
-      }
-    } catch {}
-
-    // If result is already a natural answer (Gemini Google Search), pass through directly
-    if (result.startsWith("🔍 **Google")) {
-      history.push({ role: "assistant", content: result });
-      return { text: result, action: null, result: null };
-    }
-
-    // For other actions (pesquisar, etc.), feed result to AI for natural response
-    const searchPrompt = `Resultado da pesquisa para "${action.args}":\n${result}\n\nAgora siga este formato:\n1. Comece com uma resposta direta e concisa.\n2. Liste os 3 principais pontos encontrados.\n3. Conclua com próximos passos ou recomendações.\nSe houver dados contraditórios, mostre os dois lados. Se não souber, diga que não sabe.`;
-    history.push({ role: "user", content: searchPrompt });
-    let followText = result;
-    try {
-      const followUp = await groq.chat.completions.create({
-        model: models[0],
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...history.slice(-6),
-        ],
-        temperature: 0.7,
-        max_tokens: 400,
-      });
-      followText = followUp.choices[0]?.message?.content || result;
-    } catch {}
-    history.push({ role: "assistant", content: followText });
-    return { text: followText, action: null, result: null };
+    return await executeActionAndRespond(action, userId, history, systemPrompt);
   }
 
   return { text: reply, action: null, result: null };
+}
+
+// --- Action execution & follow-up response ---
+async function executeActionAndRespond(action, userId, history, systemPrompt) {
+  history[history.length - 1] = { role: "assistant", content: `[Executou ação: ${action.action}]` };
+
+  let result;
+  try {
+    result = await actions.execute(action.action, action.args || "", userId);
+  } catch (err) {
+    console.error("Action execution error:", err);
+    result = `❌ Erro ao executar ${action.action}: ${err.message}`;
+  }
+
+  // Display types (image, music) — return raw for web UI
+  try {
+    const parsed = JSON.parse(result);
+    if (parsed.type === "image" || parsed.type === "music") {
+      return { text: null, action: action.action, result };
+    }
+  } catch {}
+
+  // Gemini Google Search — already a natural answer, pass through
+  if (result.startsWith("🔍 **Google")) {
+    history.push({ role: "assistant", content: result });
+    return { text: result, action: null, result: null };
+  }
+
+  // Other actions: feed result to AI for natural explanation
+  const followPrompt = `Resultado da ação "${action.action}":\n${result}\n\nAgora siga este formato:\n1. Comece com uma resposta direta e concisa.\n2. Liste os 3 principais pontos encontrados.\n3. Conclua com próximos passos ou recomendações.\nSe houver dados contraditórios, mostre os dois lados. Se não souber, diga que não sabe.`;
+  history.push({ role: "user", content: followPrompt });
+  let followText = result;
+  try {
+    const followUp = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        { role: "system", content: systemPrompt },
+        ...history.slice(-6),
+      ],
+      temperature: 0.7,
+      max_tokens: 400,
+    });
+    followText = followUp.choices[0]?.message?.content || result;
+  } catch (e) {
+    console.error("Follow-up AI failed:", e.message);
+  }
+  history.push({ role: "assistant", content: followText });
+  return { text: followText, action: null, result: null };
 }
 
 function clearHistory(userId) {
