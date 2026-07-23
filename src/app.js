@@ -6,13 +6,20 @@ const fs = require("fs");
 const { EdgeTTS } = require("node-edge-tts");
 const { chat, clearHistory } = require("./groq");
 
-const tts = new EdgeTTS({
-  voice: "pt-BR-FranciscaNeural",
-  lang: "pt-BR",
-  outputFormat: "audio-24khz-48kbitrate-mono-mp3",
-  pitch: "0%",
-  rate: "+10%",
-});
+let tts;
+try {
+  const { EdgeTTS } = require("node-edge-tts");
+  tts = new EdgeTTS({
+    voice: "pt-BR-FranciscaNeural",
+    lang: "pt-BR",
+    outputFormat: "audio-24khz-48kbitrate-mono-mp3",
+    pitch: "0%",
+    rate: "+10%",
+  });
+} catch (e) {
+  console.error("TTS init error:", e.message);
+  tts = null;
+}
 
 // Pre-set user name from env
 if (process.env.USER_NAME) {
@@ -100,6 +107,7 @@ app.get("/api/export/:userId", (req, res) => {
 app.post("/api/tts", async (req, res) => {
   const { text } = req.body;
   if (!text) return res.status(400).json({ error: "Texto obrigatório" });
+  if (!tts) return res.status(503).json({ error: "TTS não disponível" });
 
   const clean = text.replace(/[🌸🥰✨⚙️📸💻📝🌐📶🔇❌🎉💕🔒📋💾📅🎲🪙😂🍅🧮🐍⚡🔋🔄🎵🔊📋🖼️🎚️⏻🔌💡🧹⌨️]+/g, "").trim();
   if (!clean) return res.json({ ok: true });
