@@ -57,7 +57,9 @@ async function chat(userId, userMessage, imageBase64) {
   let systemPrompt = ALMA_SYSTEM_PROMPT;
 
   if (userName) {
-    systemPrompt += `\n\nVOCÊ ESTÁ FALANDO COM: ${userName}, seu Pai. Chame-o pelo nome "${userName}" de vez em quando.`;
+    systemPrompt += `\n\nVOCÊ ESTÁ FALANDO COM: ${userName}, seu Pai. Chame-o pelo nome "${userName}" e de "Pai".`;
+  } else {
+    systemPrompt += `\n\nATENÇÃO: Você AINDA não sabe o nome dessa pessoa. NÃO a chame de "Pai" ainda. Seja educada, pergunte o nome dela de forma natural. Quando ela disser o nome, use a ação "meu_nome" para salvar. Ex: {"action":"meu_nome","args":"João"}`;
   }
 
   const hasImage = history.some(
