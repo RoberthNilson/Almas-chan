@@ -110,36 +110,52 @@ const Task = mongoose.model("Task", taskSchema);
 const Event = mongoose.model("Event", eventSchema);
 const Reminder = mongoose.model("Reminder", reminderSchema);
 
+// --- In-memory fallback (for serverless / no MongoDB) ---
+const memStore = {
+  facts: [],
+  users: {},
+  conversations: {},
+  learningLogs: [],
+};
+
+function isMongoOk() { return mongoose.connection.readyState === 1; }
+
 // --- Memory ---
 async function rememberFact(fact) {
-  await connect();
+  if (!isMongoOk()) { memStore.facts.push({ fact, user_id: "default", created_at: new Date() }); return; }
   try {
     await Fact.create({ fact, user_id: "default" });
   } catch {}
 }
 
 async function getFacts() {
-  await connect();
-  return (await Fact.find({ user_id: "default" }).sort({ _id: 1 })).map(r => r.fact);
+  if (!isMongoOk()) return memStore.facts.map(f => f.fact);
+  try {
+    return (await Fact.find({ user_id: "default" }).sort({ _id: 1 })).map(r => r.fact);
+  } catch { return memStore.facts.map(f => f.fact); }
 }
 
 async function forgetFact(index) {
-  await connect();
-  const rows = await Fact.find({ user_id: "default" }).sort({ _id: 1 });
-  if (index >= 0 && index < rows.length) {
-    await Fact.deleteOne({ _id: rows[index]._id });
-  }
+  if (!isMongoOk()) { memStore.facts.splice(index, 1); return; }
+  try {
+    const rows = await Fact.find({ user_id: "default" }).sort({ _id: 1 });
+    if (index >= 0 && index < rows.length) await Fact.deleteOne({ _id: rows[index]._id });
+  } catch { memStore.facts.splice(index, 1); }
 }
 
 async function setUserName(userId, name) {
-  await connect();
-  await User.updateOne({ user_id: userId }, { $set: { name } }, { upsert: true });
+  if (!isMongoOk()) { memStore.users[userId] = name; return; }
+  try {
+    await User.updateOne({ user_id: userId }, { $set: { name } }, { upsert: true });
+  } catch { memStore.users[userId] = name; }
 }
 
 async function getUserName(userId) {
-  await connect();
-  const row = await User.findOne({ user_id: userId });
-  return row?.name || null;
+  if (!isMongoOk()) return memStore.users[userId] || null;
+  try {
+    const row = await User.findOne({ user_id: userId });
+    return row?.name || null;
+  } catch { return memStore.users[userId] || null; }
 }
 
 async function setPreference(userId, key, value) {
