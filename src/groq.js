@@ -114,7 +114,8 @@ async function chat(userId, userMessage, imageBase64) {
     } catch {}
 
     // For other actions (pesquisar, etc.), feed result to AI for natural response
-    history.push({ role: "user", content: `Resultado da ação "${action.action}":\n${result}\n\nExplique isso pra mim de forma natural.` });
+    const searchPrompt = `Resultado da pesquisa para "${action.args}":\n${result}\n\nAgora siga este formato:\n1. Comece com uma resposta direta e concisa.\n2. Liste os 3 principais pontos encontrados.\n3. Conclua com próximos passos ou recomendações.\nSe houver dados contraditórios, mostre os dois lados. Se não souber, diga que não sabe.`;
+    history.push({ role: "user", content: searchPrompt });
     let followText = result;
     try {
       const followUp = await groq.chat.completions.create({
