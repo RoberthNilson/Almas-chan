@@ -8,6 +8,7 @@ const DOWNLOADS = path.join(os.homedir(), "Downloads");
 const DOCUMENTS = path.join(os.homedir(), "Documents");
 
 const timers = new Map();
+const IS_VERCEL = !!process.env.VERCEL;
 
 const PROTECTED_PROCESSES = [
   "node.exe", "node", "alma-chan", "explorer.exe", "svchost.exe",
@@ -26,6 +27,7 @@ function isProtected(proc) {
 }
 
 function runCommand(cmd, timeout = 15000) {
+  if (IS_VERCEL) return Promise.resolve("🌐 Indisponível na versão web.");
   return new Promise((resolve) => {
     exec(cmd, { timeout, encoding: "utf-8", shell: "cmd.exe" }, (err, stdout, stderr) => {
       if (err) resolve(`❌ Erro: ${err.message}`);
@@ -241,7 +243,8 @@ const actions = {
   },
 
   async screenshot() {
-    const outPath = path.join(DOWNLOADS, `alma-screenshot-${Date.now()}.png`);
+    const outDir = IS_VERCEL ? os.tmpdir() : DOWNLOADS;
+    const outPath = path.join(outDir, `alma-screenshot-${Date.now()}.png`);
     const cmd = `powershell -Command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.Screen]::PrimaryScreen | ForEach-Object { $bmp = New-Object System.Drawing.Bitmap($_.Bounds.Width, $_.Bounds.Height); $gfx = [System.Drawing.Graphics]::FromImage($bmp); $gfx.CopyFromScreen($_.Bounds.Location, [System.Drawing.Point]::Empty, $_.Bounds.Size); $bmp.Save('${outPath}') }"`;
     await runCommand(cmd, 10000);
     if (fs.existsSync(outPath)) {
@@ -505,7 +508,8 @@ const actions = {
       track.addEvent(noteSequence);
 
       const writer = new MidiWriter.Writer([track]);
-      const outPath = path.join(DOWNLOADS, `alma-musica-${Date.now()}.mid`);
+      const outDir = IS_VERCEL ? os.tmpdir() : DOWNLOADS;
+      const outPath = path.join(outDir, `alma-musica-${Date.now()}.mid`);
       const dataUri = writer.dataUri();
       const base64 = dataUri.split(",")[1];
       fs.writeFileSync(outPath, Buffer.from(base64, "base64"));
