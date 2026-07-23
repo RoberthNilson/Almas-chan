@@ -27,7 +27,7 @@ Ações de Controle:
 - copiar: Copia texto para clipboard
 - salvar: Salva texto em arquivo
 - sites: Abre site no navegador
-- pesquisar: Pesquisa no Google
+- pesquisar: Pesquisa na internet e retorna o resultado (ex: "pesquisar temperatura hoje SP")
 
 Gerenciamento de Arquivos:
 - baixar / download: Baixa arquivo da internet (ex: "baixar https://exemplo.com/arquivo.zip")

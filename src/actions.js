@@ -263,7 +263,30 @@ const actions = {
   async pesquisar(args) {
     const q = args.trim();
     if (!q) return "❌ O que quer pesquisar?";
-    return runCommand(`start "https://www.google.com/search?q=${encodeURIComponent(q)}"`);
+    try {
+      const https = require("https");
+      const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1&skip_disambig=1`;
+      const result = await new Promise((resolve, reject) => {
+        https.get(url, (res) => {
+          let data = "";
+          res.on("data", c => data += c);
+          res.on("end", () => {
+            try {
+              const json = JSON.parse(data);
+              let text = json.AbstractText || json.Heading || "";
+              if (json.RelatedTopics?.length) {
+                const extras = json.RelatedTopics.slice(0, 5).map(t => t.Text || t.FirstURL).filter(Boolean);
+                if (extras.length) text += "\n\n" + extras.join("\n");
+              }
+              resolve(text || "Nada encontrado.");
+            } catch { reject(new Error("Parse error")); }
+          });
+        }).on("error", reject);
+      });
+      return result ? `🔍 Resultado da pesquisa:\n\n${result.substring(0, 2000)}` : "🔍 Nada encontrado.";
+    } catch (err) {
+      return `❌ Erro ao pesquisar: ${err.message?.substring(0, 100)}`;
+    }
   },
 
   async digitar(args) {
