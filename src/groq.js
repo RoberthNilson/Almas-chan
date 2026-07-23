@@ -104,7 +104,32 @@ async function chat(userId, userMessage, imageBase64) {
   if (action) {
     history[history.length - 1] = { role: "assistant", content: `[Executou ação: ${action.action}]` };
     const result = await actions.execute(action.action, action.args || "", userId);
-    return { text: null, action: action.action, result };
+
+    // For display-type actions (image, music), return directly for web UI
+    try {
+      const parsed = JSON.parse(result);
+      if (parsed.type === "image" || parsed.type === "music") {
+        return { text: null, action: action.action, result };
+      }
+    } catch {}
+
+    // For other actions (pesquisar, etc.), feed result to AI for natural response
+    history.push({ role: "user", content: `Resultado da ação "${action.action}":\n${result}\n\nExplique isso pra mim de forma natural.` });
+    let followText = result;
+    try {
+      const followUp = await groq.chat.completions.create({
+        model: models[0],
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...history.slice(-6),
+        ],
+        temperature: 0.7,
+        max_tokens: 400,
+      });
+      followText = followUp.choices[0]?.message?.content || result;
+    } catch {}
+    history.push({ role: "assistant", content: followText });
+    return { text: followText, action: null, result: null };
   }
 
   return { text: reply, action: null, result: null };
