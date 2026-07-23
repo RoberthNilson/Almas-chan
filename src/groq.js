@@ -51,10 +51,7 @@ async function chat(userId, userMessage, imageBase64) {
 
   // --- User recognition ---
   let userName = await memory.getUserName(userId);
-  if (!userName && userId !== "default") {
-    userName = await memory.getUserName("default");
-  }
-  if (!userName) {
+  if (!userName && (userId === "default" || userId === "web-user")) {
     userName = process.env.USER_NAME || null;
   }
   let systemPrompt = ALMA_SYSTEM_PROMPT;
@@ -62,7 +59,7 @@ async function chat(userId, userMessage, imageBase64) {
   if (userName) {
     systemPrompt += `\n\nVOCÊ ESTÁ FALANDO COM: ${userName}, seu Pai. Chame-o pelo nome "${userName}" e de "Pai".`;
   } else {
-    systemPrompt += `\n\nATENÇÃO: Você AINDA não sabe o nome dessa pessoa. NÃO a chame de "Pai" ainda. Seja educada, pergunte o nome dela de forma natural. Quando ela disser o nome, use a ação "meu_nome" para salvar. Ex: {"action":"meu_nome","args":"João"}`;
+    systemPrompt += `\n\nATENÇÃO: Você NÃO conhece essa pessoa. Sua PRIMEIRA resposta deve ser perguntar o nome dela. Ex: "Oi! Qual seu nome? 🥰" ou "Oie! Quem é você? 🌸". NÃO a chame de "Pai" ainda. Quando ela disser o nome, use a ação "meu_nome" para salvar.`;
   }
 
   const hasImage = history.some(
