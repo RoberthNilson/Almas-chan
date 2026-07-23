@@ -15,7 +15,7 @@ const tts = new EdgeTTS({
 });
 
 const app = express();
-const PORT = process.env.WEB_PORT || 3000;
+const PORT = process.env.PORT || process.env.WEB_PORT || 3000;
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -120,6 +120,6 @@ app.post("/api/tts", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`🌸 Alma-chan web rodando em http://localhost:${PORT}`);
 });
