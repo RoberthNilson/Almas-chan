@@ -113,6 +113,12 @@ async function chat(userId, userMessage, imageBase64) {
       }
     } catch {}
 
+    // If result is already a natural answer (Gemini Google Search), pass through directly
+    if (result.startsWith("🔍 **Google")) {
+      history.push({ role: "assistant", content: result });
+      return { text: result, action: null, result: null };
+    }
+
     // For other actions (pesquisar, etc.), feed result to AI for natural response
     const searchPrompt = `Resultado da pesquisa para "${action.args}":\n${result}\n\nAgora siga este formato:\n1. Comece com uma resposta direta e concisa.\n2. Liste os 3 principais pontos encontrados.\n3. Conclua com próximos passos ou recomendações.\nSe houver dados contraditórios, mostre os dois lados. Se não souber, diga que não sabe.`;
     history.push({ role: "user", content: searchPrompt });

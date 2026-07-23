@@ -263,6 +263,41 @@ const actions = {
   async pesquisar(args) {
     const q = args.trim();
     if (!q) return "❌ O que quer pesquisar?";
+
+    // Use Gemini with Google Search Grounding when key is available
+    if (process.env.GEMINI_API_KEY) {
+      const models = ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-flash"];
+      const { GoogleGenAI } = require("@google/genai");
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+      for (const model of models) {
+        try {
+          const response = await ai.models.generateContent({
+            model,
+            contents: q,
+            config: { tools: [{ google_search: {} }] },
+          });
+
+          const text = response.text;
+          if (text) {
+            let result = `🔍 **Google (via ${model})**\n\n${text}`;
+            const meta = response.candidates?.[0]?.groundingMetadata;
+            if (meta?.groundingChunks?.length) {
+              const sources = meta.groundingChunks
+                .filter(c => c.web?.uri)
+                .map((c, i) => `${i + 1}. ${c.web.title || c.web.uri}\n   ${c.web.uri}`);
+              if (sources.length) result += `\n\n📚 **Fontes:**\n${sources.join("\n")}`;
+            }
+            return result;
+          }
+        } catch (e) {
+          console.error(`Gemini ${model} search failed:`, e.message);
+        }
+      }
+      // All Gemini models failed, fall through to DuckDuckGo
+    }
+
+    // Fallback: DuckDuckGo
     try {
       const https = require("https");
       const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1&skip_disambig=1`;
@@ -283,7 +318,7 @@ const actions = {
           });
         }).on("error", reject);
       });
-      return result ? `🔍 Resultado da pesquisa:\n\n${result.substring(0, 2000)}` : "🔍 Nada encontrado.";
+      return result ? `🔍 Resultado da pesquisa (DuckDuckGo):\n\n${result.substring(0, 2000)}` : "🔍 Nada encontrado.";
     } catch (err) {
       return `❌ Erro ao pesquisar: ${err.message?.substring(0, 100)}`;
     }
