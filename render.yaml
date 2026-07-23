@@ -2,6 +2,7 @@ services:
   - type: web
     name: alma-chan
     env: node
+    rootDir: .
     buildCommand: npm install
     startCommand: node src/index.js
     healthCheckPath: /
@@ -11,7 +12,7 @@ services:
       - key: GROQ_API_KEY
         sync: false
       - key: MONGO_URI
-        value: mongodb+srv://YOUR_USER:YOUR_PASS@cluster0.xxxxx.mongodb.net/alma-chan?retryWrites=true&w=majority
+        sync: false
       - key: EMAIL_USER
         sync: false
       - key: EMAIL_PASS
