@@ -70,8 +70,8 @@ app.post("/api/chat", async (req, res) => {
 
     res.json({ reply: result.text });
   } catch (err) {
-    console.error("Erro Groq:", err.message);
-    res.status(500).json({ error: "Alma-chan travou um pouquinho... 😵" });
+    console.error("Erro Groq:", err);
+    res.status(500).json({ error: "Alma-chan travou um pouquinho... 😵", detail: err.message?.substring(0, 200) });
   }
 });
 
